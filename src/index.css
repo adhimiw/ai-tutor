@@ -59,13 +59,29 @@
     }
   }
 
-  /* Topic tags specific styling */
+  /* Topic tags specific styling - Force display */
   .topic-tag {
-    @apply inline-block px-2 py-1 bg-gray-100 dark:bg-gray-700 text-xs rounded-md text-gray-600 dark:text-gray-300 whitespace-nowrap mr-2 mb-1;
+    display: inline-block !important;
+    padding: 4px 8px !important;
+    background-color: #f3f4f6 !important;
+    color: #4b5563 !important;
+    font-size: 12px !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    margin-right: 8px !important;
+    margin-bottom: 4px !important;
   }
 
   .topic-container {
-    @apply flex flex-wrap gap-2;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Dark mode support for topic tags */
+  .dark .topic-tag {
+    background-color: #374151 !important;
+    color: #d1d5db !important;
   }
 }
 

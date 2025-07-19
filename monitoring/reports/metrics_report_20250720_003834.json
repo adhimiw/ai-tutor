@@ -1,0 +1,327 @@
+{
+  "timestamp": "2025-07-20T00:38:34.334427",
+  "services": {
+    "dspy_service": {
+      "name": "dspy_service",
+      "url": "http://localhost:8001",
+      "status": "healthy",
+      "response_time": 0.0019631385803222656,
+      "last_check": "2025-07-20 00:38:28.512556",
+      "error_count": 2,
+      "success_count": 293,
+      "uptime_percentage": 99.32203389830508,
+      "last_error": null
+    },
+    "backend_api": {
+      "name": "backend_api",
+      "url": "http://localhost:5000",
+      "status": "healthy",
+      "response_time": 0.0015904903411865234,
+      "last_check": "2025-07-20 00:38:28.514229",
+      "error_count": 1,
+      "success_count": 294,
+      "uptime_percentage": 99.66101694915255,
+      "last_error": null
+    },
+    "frontend": {
+      "name": "frontend",
+      "url": "http://localhost:3000",
+      "status": "healthy",
+      "response_time": 0.0025708675384521484,
+      "last_check": "2025-07-20 00:38:28.516828",
+      "error_count": 0,
+      "success_count": 295,
+      "uptime_percentage": 100.0,
+      "last_error": null
+    }
+  },
+  "system": {
+    "cpu_usage": 16.4,
+    "memory_usage": 50.3,
+    "disk_usage": 71.5,
+    "network_io": {
+      "bytes_sent": 295257158,
+      "bytes_recv": 1754300556
+    },
+    "timestamp": "2025-07-20 00:38:29.517637"
+  },
+  "workflows": [
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.8008480072021484,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.8817880153656006,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 2.9189484119415283,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 5.9604644775390625e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:35:23.181674",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.8693668842315674,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.9119424819946289,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 2.9572207927703857,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 4.0531158447265625e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:35:43.937969",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 4.049361228942871,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.9198908805847168,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 3.1293771266937256,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 4.5299530029296875e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:36:04.870648",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.9500982761383057,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.882368803024292,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 3.0676381587982178,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 3.5762786865234375e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:36:25.713489",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 6.3766868114471436,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.9661991596221924,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 5.410367965698242,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 5.7220458984375e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:36:49.012755",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.8504891395568848,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.8874969482421875,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 2.9628734588623047,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 5.9604644775390625e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:37:09.763249",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.8286688327789307,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.8594894409179688,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 2.9689908027648926,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 4.0531158447265625e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:37:30.468066",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 4.521972417831421,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.8919637203216553,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 3.6299190521240234,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 4.5299530029296875e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:37:51.867293",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.86828351020813,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.8553109169006348,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 3.012868642807007,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 4.76837158203125e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:38:12.609190",
+      "error_message": null
+    },
+    {
+      "workflow_name": "end_to_end_user_interaction",
+      "total_time": 3.951871633529663,
+      "steps": [
+        {
+          "name": "dspy_direct_test",
+          "duration": 0.9266681671142578,
+          "success": true,
+          "details": "Status: 200"
+        },
+        {
+          "name": "backend_api_test",
+          "duration": 3.025099277496338,
+          "success": true,
+          "details": "Status: 200, Enhanced: False"
+        },
+        {
+          "name": "educational_quality_check",
+          "duration": 4.291534423828125e-06,
+          "success": false,
+          "details": "Educational structure detected: False"
+        }
+      ],
+      "success": false,
+      "timestamp": "2025-07-20 00:38:33.469531",
+      "error_message": null
+    }
+  ],
+  "summary": {
+    "overall_health": "healthy",
+    "services_up": 3,
+    "services_total": 3,
+    "average_response_time": 0.002041498819986979,
+    "workflow_success_rate": 0.0
+  }
+}

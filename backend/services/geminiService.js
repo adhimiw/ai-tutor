@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import vectorMemoryService from './vectorMemoryService.js';
+import dspyIntegrationService from './dspyIntegrationService.js';
 import Conversation from '../models/Conversation.js';
 
 dotenv.config();
@@ -60,16 +61,63 @@ Always maintain a friendly, professional, and educational tone.`;
     try {
       const conversationId = context.conversationId || `conv_${Date.now()}`;
 
+      // Try DSPy enhanced response first
+      try {
+        const dspyResponse = await dspyIntegrationService.generateEnhancedResponse(userMessage, {
+          ...context,
+          conversationId
+        });
+
+        if (dspyResponse && dspyResponse.enhanced) {
+          console.log('Using DSPy enhanced response');
+
+          // Collect training data for future optimization
+          dspyIntegrationService.collectTrainingData(userMessage, dspyResponse.response, {
+            conversationId,
+            subject: context.subject
+          });
+
+          return {
+            response: dspyResponse.response,
+            conversationId: dspyResponse.conversationId,
+            enhanced: true,
+            explanation: dspyResponse.explanation,
+            nextSteps: dspyResponse.nextSteps,
+            confidence: dspyResponse.confidence,
+            sources: dspyResponse.sources
+          };
+        }
+      } catch (error) {
+        console.warn('DSPy service error, falling back to Gemini:', error.message);
+      }
+
+      // Fallback to original Gemini implementation
+      console.log('Using fallback Gemini response');
+
       // Try to retrieve relevant context from vector memory (with fallback)
       let relevantContext = [];
       let conversationHistory = [];
 
       try {
-        relevantContext = await vectorMemoryService.retrieveRelevantContext(
-          userMessage,
-          5,
-          conversationId
-        );
+        // Check if user is asking about previous conversations
+        const isMemoryQuery = /remember|recall|previous|earlier|before|conversation about|discussed|talked about/i.test(userMessage);
+
+        if (isMemoryQuery) {
+          // Search across all conversations for relevant context
+          console.log('Memory query detected, searching across all conversations');
+          relevantContext = await vectorMemoryService.retrieveRelevantContext(
+            userMessage,
+            10, // Get more results for memory queries
+            'search_all' // Special flag to search all conversations
+          );
+        } else {
+          // Normal conversation-specific context
+          relevantContext = await vectorMemoryService.retrieveRelevantContext(
+            userMessage,
+            5,
+            conversationId
+          );
+        }
 
         conversationHistory = await vectorMemoryService.getConversationHistory(
           conversationId,
@@ -80,7 +128,7 @@ Always maintain a friendly, professional, and educational tone.`;
       }
 
       // Prepare the conversation context
-      const contextInfo = this.prepareContext(context, relevantContext, conversationHistory);
+      const contextInfo = this.prepareContext(context, relevantContext, conversationHistory, conversationId);
 
       const prompt = `${this.systemPrompt}
 
@@ -92,7 +140,7 @@ Student Question: ${userMessage}
 Please provide a helpful, educational response:`;
 
       const result = await this.model.generateContent(prompt);
-      const response = await result.response;
+      const response = result.response;
       const responseText = response.text();
 
       // Try to store the conversation in vector memory (with fallback)
@@ -177,7 +225,7 @@ Provide educational feedback:`;
     }
   }
 
-  prepareContext(context, relevantContext = [], conversationHistory = []) {
+  prepareContext(context, relevantContext = [], conversationHistory = [], currentConversationId = null) {
     let contextInfo = '';
 
     if (context.userProfile) {
@@ -213,7 +261,14 @@ Provide educational feedback:`;
     if (relevantContext.length > 0) {
       contextInfo += `Relevant Previous Context:\n`;
       relevantContext.forEach((item, index) => {
-        contextInfo += `${index + 1}. ${item.content}\n`;
+        const isFromDifferentConversation = item.conversationId && item.conversationId !== currentConversationId;
+        const contextLabel = isFromDifferentConversation ?
+          `Previous Conversation ${index + 1}` :
+          `${index + 1}`;
+        contextInfo += `${contextLabel}. ${item.content}\n`;
+        if (isFromDifferentConversation) {
+          contextInfo += `   (From conversation: ${item.conversationId})\n`;
+        }
       });
       contextInfo += '\n';
     }
@@ -362,6 +417,39 @@ Please answer the question based on the document content and provide educational
     try {
       const conversationId = context.conversationId || `conv_${Date.now()}`;
 
+      // Try DSPy enhanced response with files first
+      try {
+        const dspyResponse = await dspyIntegrationService.generateResponseWithFiles(userMessage, files, {
+          ...context,
+          conversationId
+        });
+
+        if (dspyResponse && dspyResponse.enhanced) {
+          console.log('Using DSPy enhanced response with files');
+
+          // Collect training data for future optimization
+          dspyIntegrationService.collectTrainingData(userMessage, dspyResponse.response, {
+            conversationId,
+            hasFiles: true,
+            fileCount: files.length
+          });
+
+          return {
+            response: dspyResponse.response,
+            conversationId: dspyResponse.conversationId,
+            enhanced: true,
+            filesProcessed: dspyResponse.filesProcessed,
+            explanation: dspyResponse.explanation,
+            nextSteps: dspyResponse.nextSteps
+          };
+        }
+      } catch (error) {
+        console.warn('DSPy service error with files, falling back to Gemini:', error.message);
+      }
+
+      // Fallback to original Gemini implementation
+      console.log('Using fallback Gemini response with files');
+
       // Retrieve relevant context from vector memory
       const relevantContext = await vectorMemoryService.retrieveRelevantContext(
         userMessage,
@@ -378,7 +466,7 @@ Please answer the question based on the document content and provide educational
       let prompt = `${this.systemPrompt}
 
 Context Information:
-${this.prepareContext(context, relevantContext, conversationHistory)}
+${this.prepareContext(context, relevantContext, conversationHistory, conversationId)}
 
 Student Question: ${userMessage}
 
@@ -558,7 +646,7 @@ Please answer the question based on the document content and provide educational
       let prompt = `${this.systemPrompt}
 
 Context Information:
-${this.prepareContext(context, relevantContext, conversationHistory)}
+${this.prepareContext(context, relevantContext, conversationHistory, conversationId)}
 
 Student Question: ${userMessage}
 

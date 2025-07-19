@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-07-20T00:18:09.736621",
+  "memory_stats": {
+    "status": "PASS",
+    "total_documents": 40,
+    "storage_type": "in-memory",
+    "is_initialized": true,
+    "total_conversations": 21
+  },
+  "memory_tests": {
+    "rdbms_memory_test": {
+      "status": "PASS",
+      "memory_score": 6,
+      "memory_indicators_found": [
+        "remember",
+        "rdbms",
+        "database",
+        "lab",
+        "analyzed",
+        "discussed"
+      ],
+      "response_preview": "yes, adhithan, i absolutely remember our detailed conversations about rdbms! we've had some great discussions about it, especially when we analyzed the \"core practical i: rdbms lab\" document.\n\nwe cove...",
+      "conversation_id": "conv_1752950864937"
+    },
+    "specific_content_test": {
+      "status": "PASS",
+      "topic_score": 6,
+      "topics_found": [
+        "sql",
+        "normalization",
+        "constraints",
+        "relational",
+        "schema",
+        "queries"
+      ],
+      "response_preview": "hello adhithan!\n\nyes, i absolutely remember our detailed discussions about the \"core practical i: rdbms lab\" document! we went through it with a fine-tooth comb, and it's a fantastic curriculum for bu...",
+      "conversation_id": "conv_1752950872002"
+    },
+    "cross_conversation_test": {
+      "status": "PASS",
+      "cross_score": 5,
+      "indicators_found": [
+        "previous",
+        "conversation",
+        "remember",
+        "discussed",
+        "files"
+      ],
+      "response_preview": "yes, adhithan, i absolutely remember our previous conversations about databases! we've had some very productive and detailed discussions, particularly focusing on **relational database management syst...",
+      "conversation_id": "conv_1752950882753"
+    }
+  },
+  "summary": {
+    "total_tests": 3,
+    "passed_tests": 3,
+    "success_rate": 100.0,
+    "memory_fix_status": "WORKING"
+  }
+}

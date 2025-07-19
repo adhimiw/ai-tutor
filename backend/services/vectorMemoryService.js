@@ -146,17 +146,26 @@ class VectorMemoryService {
 
       // Calculate similarity for all stored documents
       for (const [id, doc] of this.vectorStore.entries()) {
-        // Filter by conversation ID if specified
-        if (conversationId && doc.metadata.conversationId !== conversationId) {
+        // For cross-conversation memory, don't filter by conversationId
+        // This allows the AI to remember content from previous conversations
+        // Only filter if explicitly requested for conversation-specific context
+        if (conversationId && conversationId !== 'search_all' && doc.metadata.conversationId !== conversationId) {
           continue;
         }
 
         const similarity = this.cosineSimilarity(queryEmbedding, doc.embedding);
+
+        // Only include results with reasonable similarity for cross-conversation search
+        if (!conversationId || conversationId === 'search_all') {
+          if (similarity < 0.3) continue; // Filter out low-similarity results
+        }
+
         results.push({
           content: doc.document,
           metadata: doc.metadata,
           similarity: similarity,
-          distance: 1 - similarity // Convert similarity to distance
+          distance: 1 - similarity, // Convert similarity to distance
+          conversationId: doc.metadata.conversationId
         });
       }
 
@@ -202,6 +211,46 @@ class VectorMemoryService {
       console.error('Error getting conversation history:', error);
       // Return empty array instead of throwing error
       console.warn('Returning empty history due to error');
+      return [];
+    }
+  }
+
+  async searchAcrossAllConversations(query, limit = 10) {
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
+
+    // If vector memory is not available, return empty array
+    if (!this.isInitialized) {
+      console.log('Vector memory not available, returning empty search results');
+      return [];
+    }
+
+    try {
+      const queryEmbedding = await this.generateEmbedding(query);
+      const results = [];
+
+      // Search through all stored documents across all conversations
+      for (const [id, doc] of this.vectorStore.entries()) {
+        const similarity = this.cosineSimilarity(queryEmbedding, doc.embedding);
+
+        // Only include results with reasonable similarity
+        if (similarity > 0.3) {
+          results.push({
+            content: doc.document,
+            similarity: similarity,
+            metadata: doc.metadata,
+            conversationId: doc.metadata.conversationId,
+            timestamp: doc.metadata.timestamp
+          });
+        }
+      }
+
+      // Sort by similarity and return top results
+      results.sort((a, b) => b.similarity - a.similarity);
+      return results.slice(0, limit);
+    } catch (error) {
+      console.error('Error searching across conversations:', error);
       return [];
     }
   }
@@ -322,6 +371,38 @@ class VectorMemoryService {
       });
 
       console.log(`Stored document ${documentId} (${this.vectorStore.size} total documents)`);
+    } catch (error) {
+      console.error('Error storing document:', error);
+      console.warn('Continuing without document storage');
+    }
+  }
+
+  async storeDocument(content, metadata = {}) {
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
+
+    // If vector memory is not available, just log and return
+    if (!this.isInitialized) {
+      console.log('Vector memory not available, skipping document storage');
+      return;
+    }
+
+    try {
+      const embedding = await this.generateEmbedding(content);
+      const docId = `doc_${this.idCounter++}_${Date.now()}`;
+
+      this.vectorStore.set(docId, {
+        id: docId,
+        embedding: embedding,
+        document: content,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          ...metadata
+        }
+      });
+
+      console.log(`Stored document ${docId} (${this.vectorStore.size} total documents)`);
     } catch (error) {
       console.error('Error storing document:', error);
       console.warn('Continuing without document storage');

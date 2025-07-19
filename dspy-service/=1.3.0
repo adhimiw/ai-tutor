@@ -1,0 +1,14 @@
+Requirement already satisfied: numpy in ./venv/lib/python3.13/site-packages (2.3.1)
+Collecting scikit-learn
+  Using cached scikit_learn-1.7.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (11 kB)
+Collecting scipy>=1.8.0 (from scikit-learn)
+  Using cached scipy-1.16.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (61 kB)
+Requirement already satisfied: joblib>=1.2.0 in ./venv/lib/python3.13/site-packages (from scikit-learn) (1.5.1)
+Collecting threadpoolctl>=3.1.0 (from scikit-learn)
+  Using cached threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
+Using cached scikit_learn-1.7.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (9.4 MB)
+Using cached scipy-1.16.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (35.1 MB)
+Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Installing collected packages: threadpoolctl, scipy, scikit-learn
+
+Successfully installed scikit-learn-1.7.1 scipy-1.16.0 threadpoolctl-3.6.0

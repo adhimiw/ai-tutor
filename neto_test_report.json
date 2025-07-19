@@ -1,0 +1,155 @@
+{
+  "test_summary": {
+    "timestamp": "2025-07-19T23:51:50.195918",
+    "total_tests": 10,
+    "passed_tests": 10,
+    "failed_tests": 0,
+    "skipped_tests": 0
+  },
+  "detailed_results": {
+    "realtime_features": {
+      "backend_health": {
+        "status": "PASS",
+        "response_time": "N/A",
+        "database_status": "Connected",
+        "details": {
+          "status": "OK",
+          "timestamp": "2025-07-19T18:20:34.829Z",
+          "database": "Connected",
+          "environment": "development"
+        }
+      },
+      "dspy_health": {
+        "status": "PASS",
+        "response_time": "N/A",
+        "details": {
+          "status": "healthy",
+          "service": "DSPy AI Tutor",
+          "version": "1.0.0",
+          "dspy_version": "2.6.27"
+        }
+      },
+      "frontend_availability": {
+        "status": "PASS",
+        "response_time": "N/A"
+      },
+      "realtime_chat": {
+        "status": "PASS",
+        "response_time": "7.62s",
+        "conversation_id": "test-conv-1752949234",
+        "response_length": 101,
+        "enhanced": false
+      }
+    },
+    "file_processing": {
+      "pdf_processing": {
+        "status": "PASS",
+        "processing_time": "20.93s",
+        "files_processed": 1,
+        "response_length": 9584,
+        "conversation_id": "conv_1752949242522"
+      },
+      "image_processing": {
+        "status": "PASS",
+        "processing_time": "18.22s",
+        "files_processed": 1,
+        "response_length": 7107,
+        "conversation_id": "conv_1752949263465"
+      },
+      "multi_file_processing": {
+        "status": "PASS",
+        "processing_time": "24.02s",
+        "files_sent": 2,
+        "files_processed": 2,
+        "response_length": 11794,
+        "conversation_id": "conv_1752949281684"
+      }
+    },
+    "memory_system": {
+      "memory_stats": {
+        "status": "PASS",
+        "total_conversations": 0,
+        "total_messages": 0,
+        "vector_store_size": 0,
+        "details": {
+          "success": true,
+          "stats": {
+            "totalDocuments": 6,
+            "storageType": "in-memory",
+            "isInitialized": true,
+            "activeConversations": 16,
+            "archivedConversations": 0,
+            "totalConversations": 16
+          }
+        }
+      },
+      "conversation_history": {
+        "status": "PASS",
+        "conversations_found": 10,
+        "recent_conversations": [
+          {
+            "_id": "687be23982e5b0d69d10d1da",
+            "conversationId": "conv_1752949281684",
+            "userId": "test-user-multi",
+            "title": "Please analyze these multiple files",
+            "messageCount": 1,
+            "tags": [],
+            "metadata": {},
+            "isArchived": false,
+            "hasVectorMemory": true,
+            "lastActivity": "2025-07-19T18:21:45.696Z",
+            "createdAt": "2025-07-19T18:21:45.696Z",
+            "updatedAt": "2025-07-19T18:21:45.696Z",
+            "__v": 0,
+            "ageInDays": 0,
+            "id": "687be23982e5b0d69d10d1da"
+          },
+          {
+            "_id": "687be22182e5b0d69d10d1d7",
+            "conversationId": "conv_1752949263465",
+            "userId": "test-user-image",
+            "title": "Please analyze this image",
+            "messageCount": 1,
+            "tags": [],
+            "metadata": {},
+            "isArchived": false,
+            "hasVectorMemory": true,
+            "lastActivity": "2025-07-19T18:21:21.673Z",
+            "createdAt": "2025-07-19T18:21:21.673Z",
+            "updatedAt": "2025-07-19T18:21:21.673Z",
+            "__v": 0,
+            "ageInDays": 0,
+            "id": "687be22182e5b0d69d10d1d7"
+          },
+          {
+            "_id": "687be20f82e5b0d69d10d1d4",
+            "conversationId": "conv_1752949242522",
+            "userId": "test-user-pdf",
+            "title": "Please analyze this PDF document",
+            "messageCount": 1,
+            "tags": [],
+            "metadata": {},
+            "isArchived": false,
+            "hasVectorMemory": true,
+            "lastActivity": "2025-07-19T18:21:03.438Z",
+            "createdAt": "2025-07-19T18:21:03.437Z",
+            "updatedAt": "2025-07-19T18:21:03.437Z",
+            "__v": 0,
+            "ageInDays": 0,
+            "id": "687be20f82e5b0d69d10d1d4"
+          }
+        ]
+      },
+      "context_continuity": {
+        "status": "PASS",
+        "conversation_id": "test-conv-1752949234",
+        "context_detected": true,
+        "response_preview": "i apologize, but based on the information provided in our conversation history, i don't have a recor..."
+      }
+    },
+    "frontend_persistence": {},
+    "websocket_continuity": {},
+    "integration_tests": {}
+  },
+  "recommendations": []
+}

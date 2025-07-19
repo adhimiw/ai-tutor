@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X, File, Image, FileText, AlertCircle } from 'lucide-react';
+import { Upload, X, File, Image, FileText, AlertCircle, Loader } from 'lucide-react';
 
 const FileUpload = ({ onFilesSelected, maxFiles = 3, maxSize = 20 * 1024 * 1024, className = '' }) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [errors, setErrors] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef(null);
 
   const supportedTypes = {
@@ -34,6 +35,7 @@ const FileUpload = ({ onFilesSelected, maxFiles = 3, maxSize = 20 * 1024 * 1024,
   };
 
   const handleFiles = (files) => {
+    setIsProcessing(true);
     const fileArray = Array.from(files);
     const newErrors = [];
     const validFiles = [];
@@ -41,6 +43,7 @@ const FileUpload = ({ onFilesSelected, maxFiles = 3, maxSize = 20 * 1024 * 1024,
     if (selectedFiles.length + fileArray.length > maxFiles) {
       newErrors.push(`Maximum ${maxFiles} files allowed`);
       setErrors(newErrors);
+      setIsProcessing(false);
       return;
     }
 
@@ -71,6 +74,8 @@ const FileUpload = ({ onFilesSelected, maxFiles = 3, maxSize = 20 * 1024 * 1024,
       setSelectedFiles(updatedFiles);
       onFilesSelected(updatedFiles.map(f => f.file));
     }
+
+    setIsProcessing(false);
   };
 
   const handleDrag = (e) => {
@@ -87,16 +92,31 @@ const FileUpload = ({ onFilesSelected, maxFiles = 3, maxSize = 20 * 1024 * 1024,
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFiles(e.dataTransfer.files);
+
+    try {
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        console.log('Files dropped:', e.dataTransfer.files.length);
+        handleFiles(e.dataTransfer.files);
+      }
+    } catch (error) {
+      console.error('Error handling dropped files:', error);
+      setErrors(['Error processing dropped files. Please try again.']);
     }
   };
 
   const handleFileInput = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFiles(e.target.files);
+    try {
+      if (e.target.files && e.target.files[0]) {
+        console.log('Files selected:', e.target.files.length);
+        handleFiles(e.target.files);
+      }
+    } catch (error) {
+      console.error('Error handling selected files:', error);
+      setErrors(['Error processing selected files. Please try again.']);
     }
+
+    // Reset the input value to allow selecting the same file again
+    e.target.value = '';
   };
 
   const removeFile = (fileId) => {
@@ -153,9 +173,13 @@ const FileUpload = ({ onFilesSelected, maxFiles = 3, maxSize = 20 * 1024 * 1024,
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
         
-        <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+        {isProcessing ? (
+          <Loader className="mx-auto h-12 w-12 text-blue-500 mb-4 animate-spin" />
+        ) : (
+          <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+        )}
         <p className="text-lg font-medium text-gray-900 mb-2">
-          Drop files here or click to upload
+          {isProcessing ? 'Processing files...' : 'Drop files here or click to upload'}
         </p>
         <p className="text-sm text-gray-500">
           Support for images (JPEG, PNG, WebP, HEIC), PDF documents, and text files

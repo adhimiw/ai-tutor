@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Bot, User, Loader, Paperclip, X } from 'lucide-react'
+import { Send, Bot, User, Loader, Paperclip, X, Wifi, WifiOff, AlertCircle } from 'lucide-react'
 import axios from 'axios'
 import FileUpload from '../components/FileUpload'
 
@@ -18,6 +18,7 @@ const ChatPage = () => {
   const [conversationId, setConversationId] = useState(null)
   const [selectedFiles, setSelectedFiles] = useState([])
   const [showFileUpload, setShowFileUpload] = useState(false)
+  const [connectionStatus, setConnectionStatus] = useState('connected')
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -27,6 +28,26 @@ const ChatPage = () => {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Health check on component mount
+  useEffect(() => {
+    const checkBackendHealth = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/memory/stats', {
+          timeout: 5000
+        })
+        if (response.status === 200) {
+          setConnectionStatus('connected')
+          console.log('Backend health check passed:', response.data)
+        }
+      } catch (error) {
+        console.warn('Backend health check failed:', error.message)
+        setConnectionStatus('disconnected')
+      }
+    }
+
+    checkBackendHealth()
+  }, [])
 
   const handleSendMessage = async (e) => {
     e.preventDefault()
@@ -53,6 +74,8 @@ const ChatPage = () => {
     setIsLoading(true)
 
     try {
+      setConnectionStatus('connecting')
+
       // Prepare form data for file upload
       const formData = new FormData()
       formData.append('message', currentMessage)
@@ -68,8 +91,11 @@ const ChatPage = () => {
       const response = await axios.post('http://localhost:5000/api/chat', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        timeout: 30000 // 30 second timeout
       })
+
+      setConnectionStatus('connected')
 
       if (response.data.success) {
         const aiResponse = {
@@ -93,17 +119,55 @@ const ChatPage = () => {
       setIsLoading(false)
     } catch (error) {
       console.error('Error sending message:', error)
+      setConnectionStatus('error')
 
-      // Show error message to user
+      // Show detailed error message to user
+      let errorMessage = 'Sorry, I encountered an error while processing your message. Please try again.'
+
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = `Server error: ${error.response.data?.error || error.response.statusText}`
+        setConnectionStatus('connected') // Server is responding, just an error
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'Unable to connect to the server. Please check your internet connection and try again.'
+        setConnectionStatus('disconnected')
+      } else if (error.code === 'ECONNABORTED') {
+        // Request timeout
+        errorMessage = 'Request timed out. The server might be busy. Please try again.'
+        setConnectionStatus('timeout')
+      } else {
+        // Something else happened
+        errorMessage = `Error: ${error.message}`
+      }
+
       const errorResponse = {
         id: Date.now() + 1,
         type: 'ai',
-        content: 'Sorry, I encountered an error while processing your message. Please try again.',
-        timestamp: new Date()
+        content: errorMessage,
+        timestamp: new Date(),
+        isError: true,
+        retryData: {
+          message: currentMessage,
+          files: currentFiles
+        }
       }
       setMessages(prev => [...prev, errorResponse])
       setIsLoading(false)
     }
+  }
+
+  const handleRetry = async (retryData) => {
+    // Remove the error message
+    setMessages(prev => prev.filter(msg => !msg.isError))
+
+    // Retry the message
+    setInputMessage(retryData.message)
+    setSelectedFiles(retryData.files || [])
+
+    // Trigger send message
+    const fakeEvent = { preventDefault: () => {} }
+    await handleSendMessage(fakeEvent)
   }
 
   return (
@@ -111,20 +175,46 @@ const ChatPage = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card h-[600px] flex flex-col"
+        className="card h-[600px] md:h-[700px] lg:h-[800px] flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center space-x-3 p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-            <Bot className="w-6 h-6 text-white" />
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <Bot className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Neto - AI Tutor
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Powered by Google Gemini 2.5 Pro
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Neto - AI Tutor
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Powered by Google Gemini 2.5 Pro
-            </p>
+
+          {/* Connection Status */}
+          <div className="flex items-center space-x-2">
+            {connectionStatus === 'connected' && (
+              <div className="flex items-center space-x-1 text-green-600">
+                <Wifi className="w-4 h-4" />
+                <span className="text-xs">Connected</span>
+              </div>
+            )}
+            {connectionStatus === 'connecting' && (
+              <div className="flex items-center space-x-1 text-yellow-600">
+                <Loader className="w-4 h-4 animate-spin" />
+                <span className="text-xs">Connecting...</span>
+              </div>
+            )}
+            {(connectionStatus === 'disconnected' || connectionStatus === 'error' || connectionStatus === 'timeout') && (
+              <div className="flex items-center space-x-1 text-red-600">
+                <WifiOff className="w-4 h-4" />
+                <span className="text-xs">
+                  {connectionStatus === 'timeout' ? 'Timeout' : 'Disconnected'}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -137,7 +227,7 @@ const ChatPage = () => {
               animate={{ opacity: 1, y: 0 }}
               className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex items-start space-x-2 max-w-xs md:max-w-md ${
+              <div className={`flex items-start space-x-2 max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl ${
                 message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
               }`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -179,6 +269,17 @@ const ChatPage = () => {
                     <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                       ✅ Analyzed {message.filesProcessed} file{message.filesProcessed > 1 ? 's' : ''}
                     </div>
+                  )}
+
+                  {/* Retry button for error messages */}
+                  {message.isError && message.retryData && (
+                    <button
+                      onClick={() => handleRetry(message.retryData)}
+                      className="mt-2 text-xs bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded transition-colors"
+                      disabled={isLoading}
+                    >
+                      🔄 Retry
+                    </button>
                   )}
 
                   <p className={`text-xs mt-1 ${
@@ -256,7 +357,7 @@ const ChatPage = () => {
             <button
               type="button"
               onClick={() => setShowFileUpload(!showFileUpload)}
-              className={`p-2 rounded-md transition-colors ${
+              className={`relative p-2 rounded-md transition-colors ${
                 showFileUpload || selectedFiles.length > 0
                   ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400'
                   : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'

@@ -101,7 +101,7 @@ const QuizPage = () => {
               </div>
             </div>
 
-            <button className="w-full btn-primary flex items-center justify-center space-x-2 group-hover:bg-purple-700 transition-colors">
+            <button className="w-full btn-primary space-x-2 group-hover:bg-purple-700 transition-colors">
               <Play className="w-4 h-4" />
               <span>Start Quiz</span>
             </button>

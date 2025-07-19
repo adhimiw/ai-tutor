@@ -99,11 +99,11 @@ const TutorialPage = () => {
 
             <div className="mb-4">
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Topics covered:</p>
-              <div className="flex flex-wrap gap-1">
+              <div className="topic-container">
                 {tutorial.topics.map((topic, topicIndex) => (
                   <span
                     key={topicIndex}
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-xs rounded-md text-gray-600 dark:text-gray-300"
+                    className="topic-tag"
                   >
                     {topic}
                   </span>
@@ -111,7 +111,7 @@ const TutorialPage = () => {
               </div>
             </div>
 
-            <button className="w-full btn-primary group-hover:bg-blue-700 transition-colors">
+            <button className="w-full btn-primary group-hover:bg-blue-700 transition-colors" aria-label={`Start ${tutorial.title} tutorial`}>
               Start Tutorial
             </button>
           </motion.div>

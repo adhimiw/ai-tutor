@@ -193,24 +193,24 @@ const ChatPage = () => {
             </div>
           </div>
 
-          {/* Connection Status */}
+          {/* Enhanced Connection Status */}
           <div className="flex items-center space-x-2">
             {connectionStatus === 'connected' && (
-              <div className="flex items-center space-x-1 text-green-600">
+              <div className="flex items-center space-x-1 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full">
                 <Wifi className="w-4 h-4" />
-                <span className="text-xs">Connected</span>
+                <span className="text-xs font-medium">Connected</span>
               </div>
             )}
             {connectionStatus === 'connecting' && (
-              <div className="flex items-center space-x-1 text-yellow-600">
+              <div className="flex items-center space-x-1 px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-full">
                 <Loader className="w-4 h-4 animate-spin" />
-                <span className="text-xs">Connecting...</span>
+                <span className="text-xs font-medium">Connecting...</span>
               </div>
             )}
             {(connectionStatus === 'disconnected' || connectionStatus === 'error' || connectionStatus === 'timeout') && (
-              <div className="flex items-center space-x-1 text-red-600">
+              <div className="flex items-center space-x-1 px-2 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full">
                 <WifiOff className="w-4 h-4" />
-                <span className="text-xs">
+                <span className="text-xs font-medium">
                   {connectionStatus === 'timeout' ? 'Timeout' : 'Disconnected'}
                 </span>
               </div>
@@ -357,16 +357,17 @@ const ChatPage = () => {
             <button
               type="button"
               onClick={() => setShowFileUpload(!showFileUpload)}
-              className={`relative p-2 rounded-md transition-colors ${
+              className={`relative p-3 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 showFileUpload || selectedFiles.length > 0
-                  ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400'
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                  ? 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800'
+                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
               disabled={isLoading}
+              aria-label="Attach files"
             >
-              <Paperclip className="w-4 h-4" />
+              <Paperclip className="w-5 h-5" />
               {selectedFiles.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
                   {selectedFiles.length}
                 </span>
               )}
@@ -382,9 +383,14 @@ const ChatPage = () => {
             <button
               type="submit"
               disabled={(!inputMessage.trim() && selectedFiles.length === 0) || isLoading}
-              className="btn-primary px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary px-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Send message"
             >
-              <Send className="w-4 h-4" />
+              {isLoading ? (
+                <Loader className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
             </button>
           </div>
 
